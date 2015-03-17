@@ -16,5 +16,6 @@
 		<description lang="cs">Aktuální informace o počasí z mnoha amatérských meteorologických stanic a kvalitní předpověď počasí přímo pro Vaši lokalitu.</description>
 		<language></language>
 		<platform>all</platform>
+		<source>https://github.com/kodi-czsk/weather.dmd-xbmc.in-pocasi</source>
 	</extension>
 </addon>
