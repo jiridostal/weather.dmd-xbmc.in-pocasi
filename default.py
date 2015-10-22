@@ -35,6 +35,9 @@ __language__   = __addon__.getLocalizedString
 #xbmc.executebuiltin('Skin.SetString(CustomBackgroundPath,'+__resource__+'\pozadi2.jpg)')
 #xbmc.executebuiltin('Skin.SetBol(UseCustomBackground, True)')
 
+def log(msg):
+    xbmc.log(("### [%s] - %s" % (__addonname__.decode('utf-8'), msg.decode('utf-8'))).encode('utf-8'), level=xbmc.LOGDEBUG)
+
 #Obecna nastaveni
 _UserAgent_ = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 WEATHER_WINDOW   = xbmcgui.Window(12600)
@@ -48,7 +51,7 @@ weathericonid = ['38', '1', '31', '32', '35', '21', '11', '26', '26', '27', '28'
 czdays = ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle']
 den = datetime.datetime.now()
 den = int(den.strftime("%w"))
-print 'den: %s' %den
+log('den: %s' %den)
 
 
 #Nastaveni hodnot o pocasi
@@ -66,7 +69,7 @@ def parse_data():
     httpdata = response.read()
     link=response.read()
     response.close()
-    print httpdata
+    log(httpdata)
     #0: 17|13|obcasny-dest|obcasny-dest|oblacno|obcasny-dest|zatazeno 1
     
     #Parsovani predovedi na 6 dnu (vcetne dneska)
@@ -97,7 +100,7 @@ def parse_data():
         set_property('Current.DewPoint'      , dewpoint(round(float(teplota.replace(",","."))), int(vlhkost)))
         set_property('Current.UVIndex'       , '-')
         index = 0;
-        print 'Stav: '+stav
+        log('Stav: '+stav)
         #Obcas blbne zobrazovani ikon v noci, protoze maji priponu -noc. Nektere ikony jsou upraveny primo pro noc, ale nektere ne, takze se tam udela tato podminka
         if os.path.exists('%s\\resources/lib/icons/%s.png'%(__cwd__, stav)) == True:
             set_property('Current.OutlookIcon', xbmc.translatePath(os.path.join(__cwd__, 'resources/lib/icons', '%s.png'%stav)))
@@ -106,8 +109,8 @@ def parse_data():
         #for icon in weatherid:
         #    if icon == stav:
         #        set_property('Current.OutlookIcon', '%s.png'%weathericonid[index])   
-        #        print 'ID obrazku: '+weathericonid[index]
-        #        print 'Stav: '+stav
+        #        log('ID obrazku: '+weathericonid[index])
+        #        log('Stav: '+stav)
         #    index = index+1
         set_property('Current.FanartCode'    , '20')
         #set_property('Today.Sunrise'        , astronomy[0].attributes['sunrise'].value)
@@ -196,17 +199,17 @@ def settings():
     krajelist   = re.compile('<region id=".+?" name="(.+?)">').findall(mestadata)
     dialog      = xbmcgui.Dialog()
     kraj        = dialog.select('Vyberte kraj', krajelist)
-    print "Vybraný kraj %s"     %krajelist[kraj]
+    log("Vybraný kraj %s"     %krajelist[kraj])
     
     #Vyparsuj a zobraz mesta
     mestalist1  = re.compile('<region id=".+?" name="%s">(.+?)</region>'%krajelist[kraj]).findall(mestadata)
-    print "Mesta %s"            %mestalist1[0]
+    log("Mesta %s"            %mestalist1[0])
     mestalist2  = re.compile('<mesto id=".+?" name="(.+?)"').findall(mestalist1[0])
     mestalistid = re.compile('<mesto id="(.+?)" name=".+?"').findall(mestalist1[0])
-    print "Mesta seznam: %s"    %mestalist2
+    log("Mesta seznam: %s"    %mestalist2)
     mesto       = dialog.select('Vyberte město', mestalist2)
-    print "Vybráno: %s"         %mestalist2[mesto]
-    print "Vybráno ID: %s"      %mestalistid[mesto]
+    log("Vybráno: %s"         %mestalist2[mesto])
+    log("Vybráno ID: %s"      %mestalistid[mesto])
     
     #Uloz nastaveni
     __addon__.setSetting('mesto', mestalist2[mesto])
